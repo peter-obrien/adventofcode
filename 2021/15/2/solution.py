@@ -75,6 +75,9 @@ def astar(G: MyGraph, start: tuple, goal: tuple, h):
                     openSetList.append(neighbor)
     raise Exception('End not reached')
 
+def expand(val, inc):
+    return val + inc if val + inc < 10 else (val + inc) % 9
+
 if __name__ == '__main__':
     filename = './sample.txt' if '-s' in sys.argv else './input.txt'
     start_time = time.time()
@@ -87,24 +90,17 @@ if __name__ == '__main__':
     for row in grid:
         expanded_row = []
         for n in range(5):
-            for i in row:
-                expanded_row.append((i+n-9) if i + n > 9 else (i+n))
+            expanded_row.extend([expand(i, n) for i in row])
         expanded_grid.append(expanded_row)
     extra_rows = []
     for n in range(1,5):
         for row in expanded_grid:
-            additional_row = []
-            for i in row:
-                additional_row.append((i+n-9) if i + n > 9 else (i+n))
-            extra_rows.append(additional_row)
+            extra_rows.append([expand(i, n) for i in row])
     for row in extra_rows:
         expanded_grid.append(row)
 
     G = MyGraph(expanded_grid)
     path = astar(G, G.get_tuple(0,0), G.get_tuple(len(G.matrix[0])-1, len(G.matrix)-1), distance)
-    total_risk = 0
-    path.popleft() # Don't count the starting position
-    while len(path) > 0:
-        total_risk += path.popleft()[0]
-
+    # Don't count the starting position
+    total_risk = sum([n[0] for n in list(path)[1:]])
     print(f"{total_risk} (took {(time.time() - start_time)}s)")
