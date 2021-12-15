@@ -1,4 +1,4 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 import sys
 import time
 
@@ -19,31 +19,26 @@ class MyGraph:
         return (self.matrix[y][x], x, y)
 
     def get_neighbors(self, x, y):
-        top = self.get_tuple(x, y-1) if y - 1 >= 0 else None
-        bottom = self.get_tuple(x, y+1) if y + 1 < len(self.matrix) else None
-        left = self.get_tuple(x-1, y) if x - 1 >= 0 else None
-        right = self.get_tuple(x+1, y) if x + 1 < len(self.matrix[0]) else None
-        result = []
-        if top:
-            result.append(top)
-        if bottom:
-            result.append(bottom)
-        if left:
-            result.append(left)
-        if right:
-            result.append(right)
-        return result
+        if y - 1 >= 0:
+            yield self.get_tuple(x, y-1)
+        if y + 1 < len(self.matrix):
+            yield self.get_tuple(x, y+1)
+        if x - 1 >= 0:
+            yield self.get_tuple(x-1, y)
+        if x + 1 < len(self.matrix[0]):
+            yield self.get_tuple(x+1, y)
 
 def reconstruct_path(cameFrom: dict, current: tuple):
-    total_path = [current]
+    total_path = deque()
+    total_path.append(current)
     while current in cameFrom:
         current = cameFrom[current]
-        total_path.append(current)
-    total_path.reverse()
+        total_path.appendleft(current)
     return total_path
 
 def distance(a:tuple, b:tuple):
-    return abs(a[1] - b[1]) + abs(a[2] - b[2])
+    # return abs(a[1] - b[1]) + abs(a[2] - b[2])
+    return 1
 
 # https://en.wikipedia.org/wiki/A*_search_algorithm
 def astar(G: MyGraph, start: tuple, goal: tuple, h):
@@ -80,37 +75,41 @@ def astar(G: MyGraph, start: tuple, goal: tuple, h):
                     openSetList.append(neighbor)
     raise Exception('End not reached')
 
-grid = []
-start_time = time.time()
-with open('./input.txt') as f:
-    lines = f.readlines()
-    for line in lines:
-        row = []
-        for n in line.strip():
-            row.append(int(n))
-        grid.append(row)
+if __name__ == '__main__':
+    filename = './sample.txt' if '-s' in sys.argv else './input.txt'
+    start_time = time.time()
 
-expanded_grid = []
-for row in grid:
-    expanded_row = []
-    for n in range(5):
-        for i in row:
-            expanded_row.append((i+n-9) if i + n > 9 else (i+n))
-    expanded_grid.append(expanded_row)
-extra_rows = []
-for n in range(1,5):
-    for row in expanded_grid:
-        additional_row = []
-        for i in row:
-            additional_row.append((i+n-9) if i + n > 9 else (i+n))
-        extra_rows.append(additional_row)
-for row in extra_rows:
-    expanded_grid.append(row)
+    grid = []
+    with open(filename) as f:
+        lines = f.readlines()
+        for line in lines:
+            row = []
+            for n in line.strip():
+                row.append(int(n))
+            grid.append(row)
 
-G = MyGraph(expanded_grid)
-path = astar(G, G.get_tuple(0,0), G.get_tuple(len(G.matrix[0])-1, len(G.matrix)-1), distance)
-total_risk = 0
-for i in range(1,len(path)):
-    total_risk += path[i][0]
-print(total_risk)
-print("--- %s seconds ---" % (time.time() - start_time))
+    expanded_grid = []
+    for row in grid:
+        expanded_row = []
+        for n in range(5):
+            for i in row:
+                expanded_row.append((i+n-9) if i + n > 9 else (i+n))
+        expanded_grid.append(expanded_row)
+    extra_rows = []
+    for n in range(1,5):
+        for row in expanded_grid:
+            additional_row = []
+            for i in row:
+                additional_row.append((i+n-9) if i + n > 9 else (i+n))
+            extra_rows.append(additional_row)
+    for row in extra_rows:
+        expanded_grid.append(row)
+
+    G = MyGraph(expanded_grid)
+    path = astar(G, G.get_tuple(0,0), G.get_tuple(len(G.matrix[0])-1, len(G.matrix)-1), distance)
+    total_risk = 0
+    path.popleft() # Don't count the starting position
+    while len(path) > 0:
+        total_risk += path.popleft()[0]
+
+    print(f"{total_risk} (took {(time.time() - start_time)}s)")
