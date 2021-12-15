@@ -81,12 +81,7 @@ if __name__ == '__main__':
 
     grid = []
     with open(filename) as f:
-        lines = f.readlines()
-        for line in lines:
-            row = []
-            for n in line.strip():
-                row.append(int(n))
-            grid.append(row)
+        grid = [list(map(int, line.strip())) for line in f.readlines()]
 
     expanded_grid = []
     for row in grid:
