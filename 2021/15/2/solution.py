@@ -1,5 +1,6 @@
 from collections import defaultdict
 import sys
+import time
 
 class MyGraph:
     def __init__(self, matrix):
@@ -80,6 +81,7 @@ def astar(G: MyGraph, start: tuple, goal: tuple, h):
     raise Exception('End not reached')
 
 grid = []
+start_time = time.time()
 with open('./input.txt') as f:
     lines = f.readlines()
     for line in lines:
@@ -111,3 +113,4 @@ total_risk = 0
 for i in range(1,len(path)):
     total_risk += path[i][0]
 print(total_risk)
+print("--- %s seconds ---" % (time.time() - start_time))
