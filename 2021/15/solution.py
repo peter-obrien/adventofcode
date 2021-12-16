@@ -86,6 +86,12 @@ if __name__ == '__main__':
     with open(filename) as f:
         grid = [list(map(int, line.strip())) for line in f.readlines()]
 
+    G = MyGraph(grid)
+    path = astar(G, G.get_tuple(0,0), G.get_tuple(len(G.matrix[0])-1, len(G.matrix)-1), distance)
+    total_risk = sum([n[0] for n in list(path)[1:]])
+    print(f"Part 1: {total_risk} (took {(time.time() - start_time)}s)")
+    start_time = time.time()
+
     expanded_grid = []
     for row in grid:
         expanded_row = []
@@ -103,4 +109,4 @@ if __name__ == '__main__':
     path = astar(G, G.get_tuple(0,0), G.get_tuple(len(G.matrix[0])-1, len(G.matrix)-1), distance)
     # Don't count the starting position
     total_risk = sum([n[0] for n in list(path)[1:]])
-    print(f"{total_risk} (took {(time.time() - start_time)}s)")
+    print(f"Part 2: {total_risk} (took {(time.time() - start_time)}s)")
