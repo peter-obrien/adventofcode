@@ -13,14 +13,15 @@ def bin_to_int(input: str):
 
 class Packet:
     def __init__(self, input: str):
-        self.input = input
-        self.subpackets = []
-        self.version = bin_to_int(input[0:3])
-        self.type = bin_to_int(input[3:6])
-        self.groups = [] # Type 4 only
-        self.length_type = None # All other types
-        self.subpacket_length = None # Types with length type == 0
-        self.subpacket_count = None # Types with length type == 1
+        self.input: str = input
+        self.remainder: str = None
+        self.subpackets: list[Packet] = []
+        self.version: int = bin_to_int(input[0:3])
+        self.type: int = bin_to_int(input[3:6])
+        self.groups: list[str] = [] # Type 4 only
+        self.length_type: int = None # All other types
+        self.subpacket_length: int = None # Types with length type == 0
+        self.subpacket_count: int = None # Types with length type == 1
         if self.type == 4:
             self.remainder = input[6:]
             self.identify_groups()
