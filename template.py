@@ -11,4 +11,9 @@ if __name__ == '__main__':
         matrix = [list(map(int, line.strip())) for line in lines]
 
     result = None
-    print(f"{result} (took {(time.time() - start_time)}s)")
+    print(f"Part 1: {result} (took {(time.time() - start_time)}s)")
+    start_time = time.time()
+
+    
+    result = None
+    print(f"Part 2: {result} (took {(time.time() - start_time)}s)")
