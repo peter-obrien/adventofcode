@@ -1,0 +1,32 @@
+inp w
+mul x 0
+add x z
+mod x 26
+div z 26
+add x -5
+eql x w
+eql x 0
+mul y 0
+add y 25
+mul y x
+add y 1
+mul z y
+mul y 0
+add y w
+add y 9
+mul y x
+add z y
+
+w = 1-9
+x = z
+x = z % 26 = 1-25
+z = z/26 = 0+
+x = x-5 = -4 - 20
+x = x != w == 0 or 1
+y = 25
+y = y * x == 0 or 25
+y = 1 + y == 1 or 26
+z = z * y = z or 26 * z
+y = w + 9 = 10-18
+y = y * x == 10-18 or 0
+z = z + y GOAL is z == 0 so we want z + y == 0
