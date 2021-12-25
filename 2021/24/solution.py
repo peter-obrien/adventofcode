@@ -69,15 +69,52 @@ if __name__ == '__main__':
     max_model_num = 0
     min_model_num = sys.maxsize
     P = ALU(instructions)
-    for a,b,c,d,e,f,g,h,i,j,k,l,m,n in product(range(4,5), repeat=14):
-        P.execute(deque((a,b,c,d,e,f,g,h,i,j,k,l,m,n)))
-        val = int(f"{a}{b}{c}{d}{e}{f}{g}{h}{i}{j}{k}{l}{m}{n}")
-        if P.vars['z'] == 0:
-            max_model_num = max(max_model_num, val)
-            min_model_num = min(min_model_num, val)
-            print(f"min is now = {min_model_num} | max is now = {max_model_num}")
-        else:
-            print(f"Rejected: {val}")
+
+    # Goal is for z == 0 at end
+    instruction_solutions = dict()
+    goal = [0]
+    for i in range(13, -1, -1):
+        new_goal = []
+        instruction_solutions[i-1] = dict()
+        print(f"Instruction {i}")
+        # print(P.instruction_sets[i])
+        for w in range(1,10):
+            target_z = []
+            print(f"w={w} z needs to be: ", end='')
+            for z in range(100000):
+                if P.process_instruction_set(w, z, tuple(P.instruction_sets[i])) in goal:
+                    print(f"{z},", end='')
+                    new_goal.append(z)
+            print()
+            instruction_solutions[i-1][w] = target_z
+        goal = new_goal
+    # instruction_solutions = dict()
+    # instruction_solutions[13] = {1: [0], 2: [0], 3: [0], 4: [0], 5: [0], 6: [0], 7: [0], 8: [0], 9: [0]}
+    # for i in range(13, 11, -1):
+    #     instruction_solutions[i-1] = dict()
+    #     print(f"Instruction {i}")
+    #     # print(P.instruction_sets[i])
+    #     for w in range(1,10):
+    #         target_z = []
+    #         for z in range(100000):
+    #             if P.process_instruction_set(w, z, tuple(P.instruction_sets[i])) in instruction_solutions[i]:
+    #                 print(z)
+    #                 # target_z.append(z)
+    #         instruction_solutions[i-1][w] = target_z
+    # for ins in instruction_solutions:
+    #     print(f"Instruction {ins}")
+    #     for w in instruction_solutions[ins]:
+    #         print(f"w={w} z needs to be {instruction_solutions[ins][w]}")
+
+    # for a,b,c,d,e,f,g,h,i,j,k,l,m,n in product(range(4,5), repeat=14):
+    #     P.execute(deque((a,b,c,d,e,f,g,h,i,j,k,l,m,n)))
+    #     val = int(f"{a}{b}{c}{d}{e}{f}{g}{h}{i}{j}{k}{l}{m}{n}")
+    #     if P.vars['z'] == 0:
+    #         max_model_num = max(max_model_num, val)
+    #         min_model_num = min(min_model_num, val)
+    #         print(f"min is now = {min_model_num} | max is now = {max_model_num}")
+    #     else:
+    #         print(f"Rejected: {val}")
 
     print(f"Part 1: {max_model_num} (took {(time.time() - start_time)}s)")
     start_time = time.time()
