@@ -34,6 +34,7 @@ inp w
 mul x 0
 add x z
 mod x 26
+div z 1
 add x 14
 eql x w
 eql x 0
@@ -71,6 +72,7 @@ inp w
 mul x 0
 add x z
 mod x 26
+div z 1
 add x 12
 eql x w
 eql x 0
@@ -89,6 +91,7 @@ inp w
 mul x 0
 add x z
 mod x 26
+div z 1
 add x 12
 eql x w
 eql x 0
@@ -107,6 +110,7 @@ inp w
 mul x 0
 add x z
 mod x 26
+div z 1
 add x 14
 eql x w
 eql x 0
