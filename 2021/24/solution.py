@@ -32,8 +32,19 @@ class ALU:
             # print(f"{self.vars['z']} ->", end='')
         # print()
     
-    # All instruction sets start with an input into 'w' and 'x' and 'y' are cleared to 0 via mul operations so 'z' is the only carry over
     @lru_cache(maxsize=None)
+    def execute_dfs(self, depth: int = 0, z: int = 0, val: int = 0):
+        result = []
+        for i in range(1,10):
+            z = self.process_instruction_set(i, z, self.instruction_sets[depth])
+            if depth == 13:
+                return [] if z != 0 else [val]
+            else:
+                result.extend(self.execute_dfs(depth+1, z, (val*10)+i))
+        return result
+    
+    # All instruction sets start with an input into 'w' and 'x' and 'y' are cleared to 0 via mul operations so 'z' is the only carry over
+    # @lru_cache(maxsize=None)
     def process_instruction_set(self, input: int, z: int, instructions: list[tuple]) -> int:
         self.next_input = input
         self.vars['z'] = z # Unnecessary, but wanted to use the variable
@@ -70,24 +81,29 @@ if __name__ == '__main__':
     min_model_num = sys.maxsize
     P = ALU(instructions)
 
+    print(P.execute_dfs())
+
+    # print(P.process_instruction_set(9, 0, tuple(P.instruction_sets[0])))
+
     # Goal is for z == 0 at end
-    instruction_solutions = dict()
-    goal = [0]
-    for i in range(13, -1, -1):
-        new_goal = []
-        instruction_solutions[i-1] = dict()
-        print(f"Instruction {i}")
-        # print(P.instruction_sets[i])
-        for w in range(1,10):
-            target_z = []
-            print(f"w={w} z needs to be: ", end='')
-            for z in range(100000):
-                if P.process_instruction_set(w, z, tuple(P.instruction_sets[i])) in goal:
-                    print(f"{z},", end='')
-                    new_goal.append(z)
-            print()
-            instruction_solutions[i-1][w] = target_z
-        goal = new_goal
+    # instruction_solutions = dict()
+    # goal = [0]
+    
+    # for i in range(13, -1, -1):
+    #     new_goal = []
+    #     instruction_solutions[i-1] = dict()
+    #     print(f"Instruction {i}")
+    #     # print(P.instruction_sets[i])
+    #     for w in range(1,10):
+    #         target_z = []
+    #         print(f"w={w} z needs to be: ", end='')
+    #         for z in range(100000):
+    #             if P.process_instruction_set(w, z, tuple(P.instruction_sets[i])) in goal:
+    #                 print(f"{z},", end='')
+    #                 new_goal.append(z)
+    #         print()
+    #         instruction_solutions[i-1][w] = target_z
+    #     goal = new_goal
     # instruction_solutions = dict()
     # instruction_solutions[13] = {1: [0], 2: [0], 3: [0], 4: [0], 5: [0], 6: [0], 7: [0], 8: [0], 9: [0]}
     # for i in range(13, 11, -1):

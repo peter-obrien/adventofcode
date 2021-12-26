@@ -1,60 +1,15 @@
-
-inp w
-mul x 0
-add x z
-mod x 26
-div z 1
-add x 13
-eql x w
-eql x 0
-mul y 0
-add y 25
-mul y x
-add y 1
-mul z y
-mul y 0
-add y w
-add y 13
-mul y x
-add z y
-
-inp w
-mul x 0
-add x z
-mod x 26
-div z 1
-add x 11
-eql x w
-eql x 0
-mul y 0
-add y 25
-mul y x
-add y 1
-mul z y
-mul y 0
-add y w
-add y 10
-mul y x
-add z y
-
-inp w
-mul x 0
-add x z
-mod x 26
-div z 1
-add x 15
-eql x w
-eql x 0
-mul y 0
-add y 25
-mul y x
-add y 1
-mul z y
-mul y 0
-add y w
-add y 5
-mul y x
-add z y
+Instruction 1
+x = inp1 != ((z * 26) + 13) -> 1 or 0
+z = (z * ((25 * x) + 1)) + ((inp1 + 13) * x)
+z = (inp1 + 13)
+Instruction 2: z (14..22)
+x = inp2 != ((z % 26) + 11) -> 0 or 1
+z = ((inp2 + 10) * x) + (z * ((25 * x) + 1))
+z = inp2 + 10 + 26z
+Instruction 3:
+x = inp3 != ((z * 26) + 15) -> 1 or 0
+z = inp3 + 5 + 26z
+Instruction 4:
 
 inp w
 mul x 0
@@ -79,7 +34,6 @@ inp w
 mul x 0
 add x z
 mod x 26
-div z 1
 add x 14
 eql x w
 eql x 0
@@ -117,7 +71,6 @@ inp w
 mul x 0
 add x z
 mod x 26
-div z 1
 add x 12
 eql x w
 eql x 0
@@ -136,7 +89,6 @@ inp w
 mul x 0
 add x z
 mod x 26
-div z 1
 add x 12
 eql x w
 eql x 0
@@ -155,7 +107,6 @@ inp w
 mul x 0
 add x z
 mod x 26
-div z 1
 add x 14
 eql x w
 eql x 0

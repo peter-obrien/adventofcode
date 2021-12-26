@@ -1,0 +1,2 @@
+instruction 8 any value is fine
+??(7..9)*(1..4)*(2..9)*******
