@@ -1,6 +1,7 @@
 from collections import defaultdict, deque
 import sys
 import time
+import heapq
 
 class MyGraph:
     def __init__(self, matrix):
@@ -44,7 +45,6 @@ def distance(a:tuple, b:tuple):
 def astar(G: MyGraph, start: tuple, goal: tuple, h):
     # The set of discovered nodes that may need to be (re-)expanded.
     openSetList = []
-    openSetList.append(start)
     # For node n, cameFrom[n] is the node immediately preceding it on the cheapest path from start to n currently known.
     cameFrom = dict()
     # For node n, gScore[n] is the cost of the cheapest path from start to n currently known.
@@ -53,18 +53,13 @@ def astar(G: MyGraph, start: tuple, goal: tuple, h):
     # For node n, fScore[n] := gScore[n] + h(n). fScore[n] represents our current best guess as to how short a path from start to finish can be if it goes through n.
     fScore = defaultdict(lambda: sys.maxsize)
     fScore[start] = h(start, goal)
+    heapq.heappush(openSetList, (fScore[start], start))
 
     while len(openSetList) > 0:
         # current := the node in openSet having the lowest fScore[] value
-        current = None
-        lowest_fScore = sys.maxsize
-        for node in openSetList:
-            if fScore[node] < lowest_fScore:
-                current = node
-                lowest_fScore = fScore[node]
+        current = heapq.heappop(openSetList)[1]
         if current == goal:
             return reconstruct_path(cameFrom, current)
-        openSetList.remove(current)
         for neighbor in G.get_neighbors(current[1], current[2]):
             tentative_gScore = gScore[current] + neighbor[0]
             if tentative_gScore < gScore[neighbor]:
@@ -72,7 +67,7 @@ def astar(G: MyGraph, start: tuple, goal: tuple, h):
                 gScore[neighbor] = tentative_gScore
                 fScore[neighbor] = tentative_gScore + h(neighbor, goal)
                 if neighbor not in openSetList:
-                    openSetList.append(neighbor)
+                    heapq.heappush(openSetList, (fScore[neighbor], neighbor))
     raise Exception('End not reached')
 
 def expand(val, inc):
